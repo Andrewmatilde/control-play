@@ -1,0 +1,33 @@
+# 1. 创建ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-app-sa
+  namespace: your-namespace
+
+# 2. 创建ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: my-app-role
+rules:
+- apiGroups: [""]  # core API组
+  resources: ["pods", "services"]  # 根据需要添加资源
+  verbs: ["get", "list", "watch"]  # 根据需要添加操作权限
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+
+# 3. 创建ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-app-role-binding
+subjects:
+- kind: ServiceAccount
+  name: my-app-sa
+  namespace: your-namespace
+roleRef:
+  kind: ClusterRole
+  name: my-app-role
+  apiGroup: rbac.authorization.k8s.io
